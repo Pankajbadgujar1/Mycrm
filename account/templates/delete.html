@@ -1,0 +1,14 @@
+{% extends 'main.html' %}
+{% block content %}
+{% load static %}
+
+<p xmlns="http://www.w3.org/1999/html"><h3>Are you sure you want to delete "{{item}} "?</h3></p>
+<form action="{% url 'deleteOrder' item.id%}" method="post">
+    {% csrf_token %}
+    <a class="btn btn-sm btn-success" href="{% url 'home' %}">Cancel</a>
+
+    <input type="submit" name="conform" class="btn btn-sm btn-danger">
+</form>
+
+
+{% endblock %}
