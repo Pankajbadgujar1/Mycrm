@@ -39,13 +39,8 @@ def customer(request, pk):
     return render(request, 'customer.html', context)
 
 
-def createOrder(request):
-    form = OrderForm()
-    context = {'form':form}
-    return render(request, 'order_form.html', context)
-
-
-def createOrder(request):
+def createOrder(request, pk):
+    customer = Customer.objects.get(id=pk)
     form = OrderForm()
     if request.method =='POST':
         #print('REQUEST METHOD',request.POST)
@@ -53,23 +48,19 @@ def createOrder(request):
         if form.is_valid():
             form.save()
             return redirect('/')
-
-
-    context = {'form':form}
+    context = {'form': form}
     return render(request, 'order_form.html', context)
+
 
 def updateOrder(request, pk):
     order = Order.objects.get(id=pk)
     form = OrderForm(instance=order)
-    if request.method =='POST':
-        #print('REQUEST METHOD',request.POST)
+    if request.method == 'POST':
         form = OrderForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('/')
-
-
-    context = {'form':form}
+    context = {'form': form}
     return render(request, 'order_form.html', context)
 
 
