@@ -8,6 +8,7 @@ from .forms import OrderForm
 from django.forms import inlineformset_factory
 
 from account.models import Customer, Order, Product
+from .filters import OrderFilter
 
 
 def home(request):
@@ -35,8 +36,11 @@ def customer(request, pk):
     customers = Customer.objects.get(id=pk)
 
     orders = customers.order_set.all()
+    order_count = orders.count()
+    myFilter = OrderFilter(request.GET, queryset=orders)
+    orders = myFilter.qs
 
-    context = {'customers':customers, 'orders':orders}
+    context = {'customers': customers, 'orders': orders, 'myFilter': myFilter}
     return render(request, 'customer.html', context)
 
 
@@ -51,7 +55,7 @@ def createOrder(request, pk):
         formset = OrderFormSet(request.POST, instance=customers)
         if formset.is_valid():
             formset.save()
-            return redirect('/') 
+            return redirect('/')
     context = {'formset':formset}
     return render(request, 'order_form.html', context)
 
