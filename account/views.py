@@ -95,12 +95,10 @@ def deleteOrder(request, pk):
 
 
 def login(request):
-
         if request.method == 'POST':
             username = request.POST.get('username')
             password = request.POST.get('password')
-            print(username)
-            print(password)
+
             user = authenticate(request, username=username, password=password)
             print(user)
             if user is not None:
@@ -109,10 +107,8 @@ def login(request):
             else:
                 messages.info(request, 'Username or password is incorrect')
 
-
-
-        context = {}
-        return render(request,'login.html', context)
+        context={}
+        return render(request, 'login.html', context)
 
 
 def register(request):
@@ -128,3 +124,6 @@ def register(request):
         context = {'form':form}
         return render(request, 'register_page.html', context)
 
+def logoutUser(request):
+    logout(request)
+    return redirect('login')
