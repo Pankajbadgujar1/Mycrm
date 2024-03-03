@@ -1,15 +1,23 @@
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render,redirect
 
 # Create your views here.
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.views.decorators.csrf import csrf_protect
+
 from account.models import models
-from .forms import OrderForm
+from .forms import OrderForm, CreateUserForm
+
+from django.contrib.auth.forms import UserCreationForm
 from django.forms import inlineformset_factory
+from django.contrib import messages
+
+
 
 from account.models import Customer, Order, Product
 from .filters import OrderFilter
-
+from django.contrib.auth.forms import UserCreationForm
 
 def home(request):
     orders = Order.objects.all()
@@ -86,4 +94,37 @@ def deleteOrder(request, pk):
 
 
 
+def login(request):
+
+        if request.method == 'POST':
+            username = request.POST.get('username')
+            password = request.POST.get('password')
+            print(username)
+            print(password)
+            user = authenticate(request, username=username, password=password)
+            print(user)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.info(request, 'Username or password is incorrect')
+
+
+
+        context = {}
+        return render(request,'login.html', context)
+
+
+def register(request):
+        form = CreateUserForm()
+        if request.method == 'POST':
+            form = CreateUserForm(request.POST)
+            if form.is_valid():
+                form.save()
+                user = form.cleaned_data.get('username')
+                messages.success(request, 'Account was created for ' + user)
+
+
+        context = {'form':form}
+        return render(request, 'register_page.html', context)
 
